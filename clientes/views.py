@@ -117,6 +117,7 @@ def nuevo_repuesto(request):
         precio_venta = request.POST.get("precio_venta")
         texto = request.POST.get("texto")
         equivalencias_json = request.POST.get("equivalencias")
+        print("EQUIVALENCIAS RAW:", equivalencias_json)
 
         if not descripcion:
             return JsonResponse({"error": "Descripción requerida"})
