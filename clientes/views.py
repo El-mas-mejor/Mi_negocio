@@ -161,7 +161,7 @@ def nuevo_repuesto(request):
                 codigo_equivalente=eq
             )
 
-    return JsonResponse({"ok": True})
+            return JsonResponse({"ok": True})
 
     # ==============================
     # GET
