@@ -6,7 +6,7 @@ class Equivalencia(models.Model):
 
     class Meta:
         unique_together = ('repuesto', 'codigo_equivalente')
-
+        db_table = "clientes_equivalencia_nueva"
     def __str__(self):
         return f"{self.repuesto.descripcion} -> {self.codigo_equivalente}"
 class TipoRepuesto(models.Model):
