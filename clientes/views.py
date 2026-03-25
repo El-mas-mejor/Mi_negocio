@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 import json
 import re
-from .models import TipoRepuesto, Marca, Modelo, Repuesto, ModeloNotebook, Compatibilidad
+from .models import TipoRepuesto, Marca, Modelo, Repuesto, ModeloNotebook, Compatibilidad, Equivalencia
 def limpiar_modelo(m):
     m = (m or "").strip().upper()
     print("MODELO ORIGINAL:", m)
@@ -41,6 +41,7 @@ def nuevo_repuesto(request):
 
     if request.method == "POST":
 
+        
         # ==============================
         # CAPTURA DE DATOS
         # ==============================
@@ -51,6 +52,7 @@ def nuevo_repuesto(request):
         precio_compra = request.POST.get("precio_compra")
         precio_venta = request.POST.get("precio_venta")
         texto = request.POST.get("texto")
+        equivalencias_json = request.POST.get("equivalencias")
         equivalencias_json = request.POST.get("equivalencias")
         print("EQUIVALENCIAS RECIBIDAS:", equivalencias_json)
         if not descripcion:
@@ -135,52 +137,31 @@ def nuevo_repuesto(request):
             print("ERROR JSON:", e)
             modelos_detectados = detectar_modelos(texto or "")
 
-        # ==============================
-        # GUARDAR COMPATIBILIDADES
-        # ==============================
-        for marca_txt, modelo_txt in modelos_detectados:
+# ==============================
+# GUARDAR EQUIVALENCIAS
+# ==============================
 
-            marca_txt = (marca_txt or "").strip().upper()
-            modelo_txt = (modelo_txt or "").strip().upper()
-            # si el modelo no sirve saltar
-            if not modelo_txt:
-                continue
-            # usar marca del formulario si no hay
-            if not marca_txt or marca_txt.strip().upper() == "DESCONOCIDA":
-                marca_txt = marca_nombre
+    try:
+        equivalencias = json.loads(equivalencias_json) if equivalencias_json else []
+    except:
+        equivalencias = []
 
-            # VALIDACIONES (mismas que frontend)
-            if len(modelo_txt) < 5:
-                continue
+    for eq in equivalencias:
 
-            if len(modelo_txt) > 25:
-                continue
+        eq = (eq or "").strip().upper()
 
-            if modelo_txt.count("-") > 3:
-                continue
+        if not eq:
+          continue
 
-            if not any(char.isdigit() for char in modelo_txt):
-                continue
+    # evitar duplicados
+        if not Equivalencia.objects.filter(repuesto=repuesto, codigo_equivalente=eq).exists():
 
-            # 🔥 MARCA REAL (TABLA)
-            marca_nb, _ = Marca.objects.get_or_create(
-                nombre=marca_txt,
-                tipo=tipo
-            )
-
-            # 🔥 MODELO NOTEBOOK SIN DUPLICAR
-            mn, _ = ModeloNotebook.objects.get_or_create(
-                marca=marca_nb,
-                modelo=modelo_txt
-            )
-
-            # 🔥 COMPATIBILIDAD SIN DUPLICAR
-            Compatibilidad.objects.get_or_create(
+            Equivalencia.objects.create(
                 repuesto=repuesto,
-                modelo_notebook=mn
+                codigo_equivalente=eq
             )
 
-        return JsonResponse({"ok": True})
+    return JsonResponse({"ok": True})
 
     # ==============================
     # GET

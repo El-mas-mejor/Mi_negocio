@@ -69,15 +69,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'crm.wsgi.application'
 
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'crm',
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
+    'default': dj_database_url.parse(
+        'postgresql://mi_negocio_db_vsqe_user:9IcSEstTkEWYED1BmsRnOvTZdKLtAusn@dpg-d71jl6v5r7bs73dut650-a/mi_negocio_db_vsqe'
+    )
 }
 
 # Password validation
