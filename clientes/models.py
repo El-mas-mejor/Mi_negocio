@@ -2,7 +2,7 @@ from django.db import models
 
 class Equivalencia(models.Model):
     repuesto = models.ForeignKey("Repuesto", on_delete=models.CASCADE, related_name="equivalencias")
-    codigo_equivalente = models.CharField(max_length=100)
+    codigo_equivalente = models.CharField(max_length=120)
 
     class Meta:
         unique_together = ('repuesto', 'codigo_equivalente')
