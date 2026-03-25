@@ -1,6 +1,8 @@
 
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 import json
 import re
 from .models import TipoRepuesto, Marca, Modelo, Repuesto, ModeloNotebook, Compatibilidad, Equivalencia
@@ -253,4 +255,17 @@ def detectar_api(request):
         ]
 
         return JsonResponse({"modelos": resultado})
+    
+    from django.contrib.auth.models import User
+from django.http import HttpResponse
+
+def crear_admin(request):
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser(
+            username="admin",
+            email="admin@email.com",
+            password="12345678"
+        )
+        return HttpResponse("Usuario admin creado")
+    return HttpResponse("El usuario ya existe")
     
