@@ -1,21 +1,14 @@
 from django.db import models
 
 class Equivalencia(models.Model):
-    repuesto1 = models.ForeignKey("Repuesto", on_delete=models.CASCADE, related_name="eq1")
-    repuesto2 = models.ForeignKey("Repuesto", on_delete=models.CASCADE, related_name="eq2")
+    repuesto = models.ForeignKey("Repuesto", on_delete=models.CASCADE, related_name="equivalencias")
+    codigo_equivalente = models.CharField(max_length=100)
 
     class Meta:
-        unique_together = ("repuesto1", "repuesto2")
-
-    def save(self, *args, **kwargs):
-        # ordenar para evitar duplicados invertidos
-        if self.repuesto1.id > self.repuesto2.id:
-            self.repuesto1, self.repuesto2 = self.repuesto2, self.repuesto1
-        super().save(*args, **kwargs)
+        unique_together = ('repuesto', 'codigo_equivalente')
 
     def __str__(self):
-        return f"{self.repuesto1} = {self.repuesto2}"
-    
+        return f"{self.repuesto.descripcion} -> {self.codigo_equivalente}"
 class TipoRepuesto(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
 
@@ -73,7 +66,7 @@ class Repuesto(models.Model):
 
 
 class Compatibilidad(models.Model):
-    repuesto = models.ForeignKey(Repuesto, on_delete=models.CASCADE)
+    repuesto = models.ForeignKey("Repuesto", on_delete=models.CASCADE)
     modelo_notebook = models.ForeignKey(ModeloNotebook, on_delete=models.CASCADE)
 
     class Meta:
@@ -85,7 +78,7 @@ class Compatibilidad(models.Model):
         return f"{self.repuesto} -> {self.modelo_notebook}"
     
 class Equivalencia(models.Model):
-    repuesto = models.ForeignKey(Repuesto, on_delete=models.CASCADE, related_name="equivalencias")
+    repuesto = models.ForeignKey("Repuesto", on_delete=models.CASCADE, related_name="equivalencias")
     codigo_equivalente = models.CharField(max_length=100)
 
     class Meta:
