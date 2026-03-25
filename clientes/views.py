@@ -13,7 +13,7 @@ from .models import (
     Repuesto,
     ModeloNotebook,
     Compatibilidad,
-    Equivalencia
+    EquivalenciaNuevo
 )
 
 
@@ -223,7 +223,7 @@ def nuevo_repuesto(request):
             if not eq:
                 continue
 
-            Equivalencia.objects.get_or_create(
+            EquivalenciaNuevo.objects.get_or_create(
                 repuesto=repuesto,
                 codigo_equivalente=eq
             )
