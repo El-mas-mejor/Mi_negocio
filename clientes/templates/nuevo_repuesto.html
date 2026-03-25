@@ -396,14 +396,24 @@
         })
         .then(response => response.json())
         .then(data => {
-    
-            if (data.error) {
-                document.getElementById("error").innerText = data.error;
-                return;
-            }
-    
-            location.reload();
-        });
+
+    if (data.error) {
+        document.getElementById("error").innerText = data.error;
+        return;
+    }
+
+    // LIMPIAR FORMULARIO
+    document.querySelector("form").reset();
+
+    // LIMPIAR TABLAS
+    document.getElementById("tabla").innerHTML = "<tr><th>Marca</th><th>Modelo</th><th>X</th></tr>";
+    document.getElementById("tabla_eq").innerHTML = "<tr><th>Marca</th><th>Código</th></tr>";
+
+    // LIMPIAR MENSAJE
+    document.getElementById("error").innerText = "";
+
+    alert("Guardado correctamente");
+});
     }
     
     </script>
