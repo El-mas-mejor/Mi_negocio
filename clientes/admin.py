@@ -92,7 +92,7 @@ def detectar_modelos(texto):
 
     return modelos
 
-from .models import Equivalencia
+from .models import EquivalenciaNuevo
 
 admin.site.register(TipoRepuesto)
 admin.site.register(Marca)
@@ -100,4 +100,4 @@ admin.site.register(Modelo)
 admin.site.register(ModeloNotebook)
 admin.site.register(Repuesto, RepuestoAdmin)
 admin.site.register(Compatibilidad)
-admin.site.register(Equivalencia)
+admin.site.register(EquivalenciaNuevo)

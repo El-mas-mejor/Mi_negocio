@@ -1,12 +1,12 @@
 from django.db import models
 
-class Equivalencia(models.Model):
-    repuesto = models.ForeignKey("Repuesto", on_delete=models.CASCADE, related_name="equivalencias")
+class EquivalenciaNuevo(models.Model):
+    repuesto = models.ForeignKey("Repuesto", on_delete=models.CASCADE)
     codigo_equivalente = models.CharField(max_length=120)
 
     class Meta:
         unique_together = ('repuesto', 'codigo_equivalente')
-        db_table = "clientes_equivalencia_nueva"
+        
     def __str__(self):
         return f"{self.repuesto.descripcion} -> {self.codigo_equivalente}"
 class TipoRepuesto(models.Model):
