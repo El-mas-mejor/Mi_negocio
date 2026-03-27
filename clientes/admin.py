@@ -7,7 +7,7 @@ from .models import (
     ModeloNotebook,
     Repuesto,
     Compatibilidad,
-    Equivalencia
+    
 )
 
 
