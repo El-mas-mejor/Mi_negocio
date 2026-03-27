@@ -77,12 +77,4 @@ class Compatibilidad(models.Model):
     def __str__(self):
         return f"{self.repuesto} -> {self.modelo_notebook}"
     
-class Equivalencia(models.Model):
-    repuesto = models.ForeignKey("Repuesto", on_delete=models.CASCADE, related_name="equivalencias")
-    codigo_equivalente = models.CharField(max_length=100)
-
-    class Meta:
-        unique_together = ('repuesto', 'codigo_equivalente')
-
-    def __str__(self):
-        return f"{self.repuesto.descripcion} -> {self.codigo_equivalente}"    
+  
