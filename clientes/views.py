@@ -23,8 +23,14 @@ from .models import (
 def limpiar_modelo(m):
     m = (m or "").strip().upper()
 
+    # 🔴 BLOQUEO DIRECTO DE REPUESTOS
+    palabras_prohibidas = ["BATERIA", "BATTERY", "PILA", "CELL"]
+    for palabra in palabras_prohibidas:
+        if palabra in m:
+            return None
+
     marcas = ["HP", "DELL", "LENOVO", "ASUS", "ACER"]
-    palabras_ruido = ["NOTEBOOK", "LAPTOP", "BATERIA", "BATTERY", "PARA", "COMPATIBLE"]
+    palabras_ruido = ["NOTEBOOK", "LAPTOP", "PARA", "COMPATIBLE"]
 
     partes = m.split()
 
@@ -41,6 +47,10 @@ def limpiar_modelo(m):
 
     if m.startswith("T") and any(c.isdigit() for c in m):
         m = "THINKPAD " + m
+
+    # 🔴 EVITAR COSAS SOLO NUMÉRICAS (tipo 5251)
+    if m.isdigit():
+        return None
 
     if not any(c.isdigit() for c in m):
         return None
