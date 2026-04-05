@@ -85,9 +85,7 @@ def limpiar_repuesto(texto):
         if len(p) < 4:
             continue
 
-        if sum(c.isdigit()for c in p):
-            continue 
-
+        
         if not any(c.isdigit() for c in p):
             continue
 
