@@ -80,7 +80,7 @@ def detectar_modelos(texto):
 
     modelos = set()
 
-    patron = re.findall(r"\b[A-Z0-9]{3,}(?:-[A-Z0-9]+)*\b", texto)
+    patron = re.findall(r"\b[A-Z0-9]+(?:-[A-Z0-9]+)+\b", texto)
 
     for m in patron:
 
