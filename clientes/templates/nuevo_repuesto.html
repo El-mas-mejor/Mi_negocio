@@ -398,11 +398,73 @@
     });
     
     function guardar(event) {
-    
-        event.preventDefault();
-    
-        if (!confirm("¿Guardar este repuesto?")) return;
-    
+    event.preventDefault();    
+        let tipo = document.querySelector('[name="tipo"]').value.trim();
+        let marca = document.querySelector('[name="marca"]').value.trim();
+        let modelo = document.querySelector('[name="modelo"]').value.trim();
+        let descripcion = document.querySelector('[name="descripcion"]').value.trim();
+
+        let error = document.getElementById("error");
+        error.style.color = "red";
+        error.innerText = "";
+
+// VALIDACIONES
+        if (!tipo) {
+           error.innerText = "Tipo requerido";
+           return;
+        }
+
+        if (!marca) {
+           error.innerText = "Marca requerida";
+           return;
+        }
+
+        if (!modelo) {
+           error.innerText = "Modelo requerido";
+           return;
+        }
+
+        if (modelo.length < 3) {
+           error.innerText = "Modelo inválido";
+           return;
+        }
+
+        if (!descripcion) {
+           error.innerText = "Descripción requerida";
+           return;
+        }
+
+        if (descripcion.length < 5) {
+           error.innerText = "Descripción muy corta";
+           return;
+        }
+        
+        let precioCompra = document.getElementById("precio_compra").value.replace(/\./g, "");
+        let precioVenta = document.getElementById("precio_venta").value.replace(/\./g, "");
+
+// validar que sean números si tienen valor
+        if (precioCompra && isNaN(precioCompra)) {
+           error.innerText = "Precio compra inválido";
+           return;
+        }
+
+        if (precioVenta && isNaN(precioVenta)) {
+           error.innerText = "Precio venta inválido";
+           return;
+        }
+
+// opcional: evitar negativos
+        if (precioCompra && Number(precioCompra) < 0) {
+           error.innerText = "Precio compra no puede ser negativo";
+           return;
+        }
+
+        if (precioVenta && Number(precioVenta) < 0) {
+           error.innerText = "Precio venta no puede ser negativo";
+           return;
+        }
+        
+            
         actualizarHidden();
     
         let equivalencias = obtenerEquivalencias();
@@ -447,7 +509,8 @@ document.getElementById("precio_venta").value =
     // LIMPIAR MENSAJE
     document.getElementById("error").innerText = "";
 
-    alert("Guardado correctamente");
+    error.style.color = "green";
+    error.innerText = "Guardado correctamente";
 });
     }
     function formatearMiles(input) {

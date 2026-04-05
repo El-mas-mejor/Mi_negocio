@@ -224,21 +224,26 @@ def nuevo_repuesto(request):
         # ==============================
         # REPUESTO
         # ==============================
-        repuesto = Repuesto.objects.filter(
+        repuesto_existente = Repuesto.objects.filter(
             tipo=tipo,
             modelo=modelo,
             descripcion=descripcion
         ).first()
 
-        if not repuesto:
-            repuesto = Repuesto.objects.create(
-                tipo=tipo,
-                modelo=modelo,
-                descripcion=descripcion,
-                precio_compra=precio_compra,
-                precio_venta=precio_venta
-            )
+        if repuesto_existente:
+            return JsonResponse({
+                "error": "Este repuesto ya existe"
+        })
 
+        repuesto = Repuesto.objects.create(
+            tipo=tipo,
+            modelo=modelo,
+            descripcion=descripcion,
+            precio_compra=precio_compra,
+            precio_venta=precio_venta
+        )
+
+        
         # ==============================
         # DETECTAR MODELOS
         # ==============================
