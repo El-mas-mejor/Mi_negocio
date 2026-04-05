@@ -29,10 +29,12 @@ def limpiar_modelo(m):
         if palabra in m:
             return None
 
-    marcas = ["HP", "DELL", "LENOVO", "ASUS", "ACER"]
-    palabras_ruido = ["NOTEBOOK", "LAPTOP", "PARA", "COMPATIBLE"]
+    marcas = ["HP", "DELL", "LENOVO", "ASUS", "ACER", "TOSHIBA", "SONY"]
+    palabras_ruido = ["NOTEBOOK", "LAPTOP", "PARA", "COMPATIBLE", "SATELLITE", "ASPIRE", "TECRA", "PORTEGE", "DYNABOOK", "VAIO", "PRO", "SERIES"]
 
     partes = m.split()
+    # eliminar palabras de repuesto dentro del texto
+    partes = [p for p in partes if p not in ["BATERIA", "BATTERY", "CARGADOR", "TECLADO"]]
 
     if partes and partes[0] in marcas:
         partes = partes[1:]
@@ -57,6 +59,49 @@ def limpiar_modelo(m):
 
     return m
 
+# =========================================
+# LIMPIAR REPUESTOS
+# =========================================
+def limpiar_repuesto(texto):
+
+    texto = (texto or "").upper()
+
+    texto = texto.replace(",", " ").replace("\n", " ").replace(":", " ")
+
+    palabras = texto.split()
+
+    resultado = set()
+
+    for p in palabras:
+
+        p = p.strip()
+
+        if p in [
+            "BATERIA", "BATTERY", "PARA", "NOTEBOOK",
+            "LAPTOP", "COMPATIBLE", "ORIGINAL"
+        ]:
+            continue
+
+        if len(p) < 4:
+            continue
+
+        if sum(c.isdigit()for c in p)<2:
+            continue 
+
+        if not any(c.isdigit() for c in p):
+            continue
+
+        if not any(c.isalpha() for c in p):
+            continue
+
+        if re.match(r"^[A-Z0-9\-]+$", p):
+
+            if re.match(r"^\d{2}-[A-Z]{2}", p):
+                continue
+
+            resultado.add(p)
+
+    return list(resultado)
 
 # =========================================
 # DETECTOR DE MODELOS
@@ -77,17 +122,24 @@ def detectar_modelos(texto):
         marca = "ASUS"
     elif "ACER" in texto:
         marca = "ACER"
+    elif "TOSHIBA" in texto:
+        marca = "TOSHIBA"
+    elif "SONY" in texto or "VAIO" in texto:
+        marca = "SONY"
 
     modelos = set()
 
-    patron = re.findall(r"\b[A-Z0-9]+(?:-[A-Z0-9]+)+\b", texto)
+    patron = re.findall(
+        r"\b[A-Z0-9]+(?:-[A-Z0-9]+)+\b|\b[A-Z]{1,2}\d{2,4}\b",
+        texto
+    )
 
     for m in patron:
 
         if m.isdigit():
             continue
 
-        if len(m) <= 4 and not any(c.isalpha() for c in m):
+        if len(m) <= 2:
             continue
 
         m = limpiar_modelo(m)
@@ -221,17 +273,9 @@ def nuevo_repuesto(request):
         # ==============================
         # EQUIVALENCIAS
         # ==============================
-        try:
-            equivalencias = json.loads(equivalencias_json) if equivalencias_json else []
-        except:
-            equivalencias = []
+        equivalencias = limpiar_repuesto(equivalencias_json)
 
         for eq in equivalencias:
-
-            eq = (eq or "").strip().upper()
-
-            if not eq:
-                continue
 
             EquivalenciaNuevo.objects.get_or_create(
                 repuesto=repuesto,
