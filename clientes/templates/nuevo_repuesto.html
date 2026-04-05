@@ -259,7 +259,7 @@
     
         tabla.innerHTML = "<tr><th>Marca</th><th>Código</th></tr>";
     
-        let encontrados = texto.match(/[A-Z0-9\-]{5,}/g) || [];
+        let encontrados = texto.match(/[A-Z0-9\-]{4,}/g) || [];
     
         let unicos = [...new Set(encontrados)];
     
